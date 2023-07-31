@@ -1,6 +1,6 @@
 
 require('dotenv').config();
-const{REST,Routes} = require('discord.js');
+const{REST,Routes,ApplicationCommandOptionType} = require('discord.js');
 
 const commands = [
     {
@@ -10,6 +10,18 @@ const commands = [
     {
       name: 'ping',
       description: 'Pong!',
+    },
+    {
+        name: 'request_tokens_guild_specific',
+        description: 'Requests Tokens!',
+        options:[
+            {
+                name: 'address',
+                description: 'address',
+                type: ApplicationCommandOptionType.String,
+                required: true,
+            },
+        ],
     },
   ];
 
