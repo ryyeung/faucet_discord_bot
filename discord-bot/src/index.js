@@ -136,7 +136,7 @@ console.log({ contract });
 async function drip(address) {
     const tx = await contract.requestTokens(address);
     await tx.wait();
-    console.log("success");
+    return tx;
 }
 
 
@@ -167,23 +167,28 @@ client.on('ready', (c) => {
 
 
 //listen to interactions/event listener
-client.on('interactionCreate', (interaction) => {
-    if (!interaction.isChatInputCommand()) return; 
-  
-    if (interaction.commandName === 'hey') {
-      return interaction.reply('hey!');
-    }
-  
-    if (interaction.commandName === 'ping') {
-      return interaction.reply('Pong!');
-    }
+client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isChatInputCommand()) return; //check if chatInput command
 
- 
-    if(interaction.commandName === 'request_tokens_guild_specific') {
-        const address = interaction.options.get('address').value;
-        drip(address);
-        return interaction.reply(address);
+    try{
+        if(interaction.commandName === 'request_tokens_guild_specific') {
+            
+            await interaction.deferReply(); //allows longer 3-second response
+            const address = interaction.options.get('address').value;
+            const tx = await drip(address);
+            const hash = tx.hash;
+           
+            //ephermal, msg only available to user who initiated interaction
+            
+            await interaction.followUp("The transaction hash is: " + hash);
+
+            //return interaction.reply("The transaction hash is: " + hash);
+        }
+    } catch(error){
+
     }
+    
+    
   });
   
 
