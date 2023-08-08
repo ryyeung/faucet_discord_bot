@@ -1,8 +1,8 @@
-require('dotenv').config();
+require("dotenv").config()
 const { ethers, JsonRpcProvider } = require('ethers');
-const {Client, IntentsBitField } = require('discord.js')
+const {Client, IntentsBitField } = require('discord.js');
 
-let contractAddress = "0x70dE848Ec334E549600F31497AF8e7ef1Cae9Be4";
+let contractAddress = "0x8b2ab07aA4b1dA08A441377D27Ac8f32815c3ED1";
 
 let contractAbi = [
   {
@@ -136,6 +136,7 @@ console.log({ contract });
 async function drip(address) {
     const tx = await contract.requestTokens(address);
     await tx.wait();
+    console.log("success");
     return tx;
 }
 
