@@ -181,16 +181,28 @@ client.on('interactionCreate', async (interaction) => {
            
             //ephermal, msg only available to user who initiated interaction
             
-            await interaction.followUp("The transaction hash is: " + hash);
+            await interaction.followUp("The transaction hash is: " + hash + "\n\nTokens transferred!");
+
 
             //return interaction.reply("The transaction hash is: " + hash);
         }
     } catch(error){
 
+        let errorMessage = error.message;
+        
+        if (error.error.reason.split('reverted: ')[1] == "Insufficient balance in faucet for withdrawal request") {
+            errorMessage = "Insufficient balance in faucet for withdrawal request";
+            interaction.followUp(`${errorMessage}, try again later.`);
+        }
+        else if (error.error.reason.split('reverted: ')[1] == "Insufficient time elapsed since last withdrawal - try again later.") {
+            errorMessage = "Insufficient time elapsed since last withdrawal";
+            interaction.followUp(`${errorMessage}, try again later.`);
+        }
+        else {
+            interaction.followUp(`try again later.`);
+        }
     }
-    
-    
-  });
+  } );
   
 
 client.login(
