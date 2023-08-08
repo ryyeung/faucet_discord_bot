@@ -2,7 +2,7 @@ require("dotenv").config()
 const { ethers, JsonRpcProvider } = require('ethers');
 const {Client, IntentsBitField } = require('discord.js');
 
-let contractAddress = "0x8b2ab07aA4b1dA08A441377D27Ac8f32815c3ED1";
+let contractAddress = process.env.CONTRACT_ADDRESS
 
 let contractAbi = [
   {
@@ -121,7 +121,7 @@ let contractAbi = [
   }
 ];
 
-const API_URL = "https://goerli.infura.io/v3/9e87bdd3ecff41568a661c916df3c818"
+const API_URL = process.env.API_URL
 const PRIVATE_KEY = process.env.PRIVATE_KEY
 
 

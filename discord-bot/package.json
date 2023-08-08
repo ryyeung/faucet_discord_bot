@@ -9,9 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^14.11.0",
+    "discord.js": "^14.12.1",
     "dotenv": "^16.3.1",
-    "ethers": "^5.4.0",
+    "ethers": "^5.7.2",
     "nodemon": "^3.0.1"
   },
   "description": ""
