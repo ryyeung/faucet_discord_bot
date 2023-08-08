@@ -121,12 +121,12 @@ let contractAbi = [
   }
 ];
 
-const API_URL = process.env.API_URL
+const INFURA_GOERLI_ENDPOINT = process.env.INFURA_GOERLI_ENDPOINT
 const PRIVATE_KEY = process.env.PRIVATE_KEY
 
 
 //async function
-const provider = new ethers.providers.JsonRpcProvider(API_URL);
+const provider = new ethers.providers.JsonRpcProvider(INFURA_GOERLI_ENDPOINT);
 console.log({ provider });
 const signer = new ethers.Wallet(PRIVATE_KEY, provider);
 console.log({ signer });
@@ -182,9 +182,6 @@ client.on('interactionCreate', async (interaction) => {
             //ephermal, msg only available to user who initiated interaction
             
             await interaction.followUp("The transaction hash is: " + hash + "\n\nTokens transferred!");
-
-
-            //return interaction.reply("The transaction hash is: " + hash);
         }
     } catch(error){
 
