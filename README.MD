@@ -3,7 +3,7 @@
 ### 1. **Environment Configuration:**
 * Set up the environment file.
 * Define `Guild ID`: 
-  - Activate Developer Mode in Discord.
+  - Navigate to Activate Developer Mode in Discord.
   - Copy the Server ID.
 
 ### 2. **Bot Token:**
@@ -17,7 +17,7 @@
 
 ### 4. **Dependencies Installation:**
 ```bash
-npm install discord.js ethers.js nodemon
+npm install discord.js ethers nodemon
 ```
 
 ### 5. **Register Commands:**

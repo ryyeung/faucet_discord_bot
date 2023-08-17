@@ -1,6 +1,6 @@
 require("dotenv").config()
 const { ethers, JsonRpcProvider } = require('ethers');
-const {Client, IntentsBitField, Collection} = require('discord.js');
+const {Client, IntentsBitField, Collection, time} = require('discord.js');
 
 
 
@@ -159,29 +159,21 @@ client.on('ready', (c) => {
     console.log(`${c.user.tag} is online.`)
 } );
 
-//event listener
-// client.on('messageCreate', (message)=>{
 
-//     //check if person is bot, if yes do nothing
-//     if(message.author.bot) {
-//         return;
-//     }
-// });
+client.on('messageCreate', (message)=>{
 
-
+    //check if person is bot, if yes do nothing
+    if(message.author.bot) {
+        return;
+    }
+});
 
 
 //listen to interactions/event listener
 client.on('interactionCreate', async (interaction) => {
 
-    //keys: command names, values: userID & last time user used command
-    client.cooldowns = new Collection();
-
-    //set cooldown collection
-    const { cooldowns } = client;
-    const userID = interaction.user.id;
-    const member = interaction.member;
-    const commandName = interaction.commandName;
+   const cooldown = new Set();
+   const member = interaction.member;
 
     if (!interaction.isChatInputCommand()) return; //check if chatInput command
 
@@ -189,44 +181,27 @@ client.on('interactionCreate', async (interaction) => {
         if(interaction.commandName === 'request_tokens') {
             
             await interaction.deferReply(); //allows longer 3-second response
+           
+            //ephermal, msg only available to user who initiated interaction
+    
             const address = interaction.options.get('address').value;
             const tx = await drip(address);
             const hash = tx.hash;
-           
-            //ephermal, msg only available to user who initiated interaction
-            
-            await interaction.followUp("The transaction hash is: " + hash + "\n\nTokens transferred!");
+            console.log(member);
+            interaction.followUp("The transaction hash is: " + hash + "\n\nTokens transferred!")
+                .then(response => {
+                    if (member.roles.cache.some(role => role.name !== 'Admin')) { //switch roles later 
+                        member.timeout(10_000);
+                        console.log("check");
+                        interaction.followUp("You have been timed-out for 10 seconds");
 
-            //add to collections 
-            if (!cooldowns.has(commandName)) {
-                cooldowns.set(commandName, new Collection());
-            }
-
-            if (member.roles.cache.some(role => role.name === 'Admin')) {
-                console.log("check")
-                //check if cooldown set for command, not needed 
-               // if (cooldowns.has(command.data.name)) {
-                    const now = Date.now();
-                    const timestamps = cooldowns.get(commandName);
-                    const defaultCooldownDuration = 50; //one hr
-                    const cooldownAmount = (commandName.cooldown ?? defaultCooldownDuration) * 1000; //convert to ms
-        
-                    //check if user_id is in collection
-                    if (timestamps.has(interaction.user.id)) {
-                        const expirationTime = timestamps.get(interaction.user.id) + cooldownAmount;
-        
-                        if (now < expirationTime) {
-                            const expiredTimestamp = Math.round(expirationTime / 1000);
-                            return interaction.followUp({ content: `Insufficient time elapsed since last withdrawal \`${commandName}\`. You can use it again <t:${expiredTimestamp}:R>.`, ephemeral: true });
+                        //check if dev role, if not add 
+                        if(member.roles !== '1141410292224512141'){
+                            member.roles.add('1141410292224512141');
                         }
                     }
-                    // Reset a cooldown
-                    // timestamps.set(interaction.user.id, now);
-                    // setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
-               // }
+                });                
             }
-            
-        }
     } catch(error){
 
         let errorMessage = error.message;
@@ -243,33 +218,9 @@ client.on('interactionCreate', async (interaction) => {
             interaction.followUp(`try again later.`);
         }
     }
-        
-        //check if 
-        
-
-        
-        //check if not admin or staff -> apply cooldown
-        //const member = interaction.options.getMember(string(userID)); 
-        // if (member.roles.cache.some(role => role.name !== 'staff') 
-        // || member.roles.cache.some(role => role.name !== 'admin')) {
-            
-        //for now, if admin -> apply cooldown
-       
-
-
-        //if success & first time request token, add dev role
-        // const role = interaction.options.getRole('role');
-        // const member = interaction.options.getMember('target');
-        // member.roles.add(role);
-    
-  } );
+  });
   
 
 client.login(
     process.env.TOKEN
 );
-
-
-// @commands.cooldown(1, 3600, commands.BucketType.user)
-// async def command(ctx):
-//     await ctx.send("command output")
