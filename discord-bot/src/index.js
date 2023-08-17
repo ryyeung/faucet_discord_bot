@@ -214,6 +214,10 @@ client.on('interactionCreate', async (interaction) => {
             errorMessage = "Insufficient time elapsed since last withdrawal";
             interaction.followUp(`${errorMessage}, try again later.`);
         }
+        else if (error.error.reason.split('reverted: ')[1] == "Only the contract owner can call this function") {
+            errorMessage = "Only the contract owner can call this function";
+            interaction.followUp(`${errorMessage}, try again later.`);
+        }
         else {
             interaction.followUp(`try again later.`);
         }
